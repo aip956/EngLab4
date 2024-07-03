@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform linux -- Python 3.8.10, pytest-6.0.0, py-1.11.0, pluggy-0.13.1
+rootdir: /code
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting app/tests/test_main.py ____________________
+/venv/lib/python3.8/site-packages/urllib3/connection.py:159: in _new_conn
+    conn = connection.create_connection(
+/venv/lib/python3.8/site-packages/urllib3/util/connection.py:84: in create_connection
+    raise err
+/venv/lib/python3.8/site-packages/urllib3/util/connection.py:74: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+/venv/lib/python3.8/site-packages/urllib3/connectionpool.py:670: in urlopen
+    httplib_response = self._make_request(
+/venv/lib/python3.8/site-packages/urllib3/connectionpool.py:392: in _make_request
+    conn.request(method, url, **httplib_request_kw)
+/usr/lib/python3.8/http/client.py:1256: in request
+    self._send_request(method, url, body, headers, encode_chunked)
+/usr/lib/python3.8/http/client.py:1302: in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+/usr/lib/python3.8/http/client.py:1251: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+/usr/lib/python3.8/http/client.py:1011: in _send_output
+    self.send(msg)
+/usr/lib/python3.8/http/client.py:951: in send
+    self.connect()
+/venv/lib/python3.8/site-packages/urllib3/connection.py:187: in connect
+    conn = self._new_conn()
+/venv/lib/python3.8/site-packages/urllib3/connection.py:171: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7ffb0c9321f0>: Failed to establish a new connection: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+/venv/lib/python3.8/site-packages/requests/adapters.py:439: in send
+    resp = conn.urlopen(
+/venv/lib/python3.8/site-packages/urllib3/connectionpool.py:726: in urlopen
+    retries = retries.increment(
+/venv/lib/python3.8/site-packages/urllib3/util/retry.py:446: in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ffb0c9321f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+
+During handling of the above exception, another exception occurred:
+app/tests/test_main.py:4: in <module>
+    from app import app
+app/__init__.py:4: in <module>
+    from .tasks import tasks
+app/tasks.py:62: in <module>
+    response = requests.post(url, json=task)
+/venv/lib/python3.8/site-packages/requests/api.py:119: in post
+    return request('post', url, data=data, json=json, **kwargs)
+/venv/lib/python3.8/site-packages/requests/api.py:61: in request
+    return session.request(method=method, url=url, **kwargs)
+/venv/lib/python3.8/site-packages/requests/sessions.py:530: in request
+    resp = self.send(prep, **send_kwargs)
+/venv/lib/python3.8/site-packages/requests/sessions.py:643: in send
+    r = adapter.send(request, **kwargs)
+/venv/lib/python3.8/site-packages/requests/adapters.py:516: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ffb0c9321f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+=========================== short test summary info ============================
+ERROR app/tests/test_main.py - requests.exceptions.ConnectionError: HTTPConne...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.72s ===============================
