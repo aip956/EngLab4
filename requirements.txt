@@ -1,12 +1,10 @@
-# fastapi==0.68.0
-# # pydantic==1.8.2
-# uvicorn==0.20.0
-# pytest==6.0
-# requests==2.24
-
-# From Anthea's requirements.txt in Kafka-Consumer_Producer
-numpy==2.0.0
-pandas==2.2.2
+fastapi==0.68.0
+uvicorn==0.20.0
+pytest==6.0
+requests==2.24
+aiokafka
+numpy
+pandas
 pika==1.3.2
 python-dateutil==2.9.0.post0
 pytz==2024.1
