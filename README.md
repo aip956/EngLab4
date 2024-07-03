@@ -33,21 +33,16 @@
 
 ## Installation
 
-1. **Build the Docker Image**:
+1. **Build the Docker Image & Run the API**:
    ```bash
    docker-compose up -d
     ```
-2. **Run the API**:
-   ```bash
-   
-   uvicorn app.main:app --reload
-   (main is under app folder)
-   ```
-3. **Run Testing suite**:
+2. **Run Testing suite**:
    ```bash
    docker-compose run test  
    ```
-   The testing report is logged in pytest_logs.txt, located in the main directory.   Access FastAPI Swagger:
+The testing report is logged in pytest_logs.txt, located in the main directory.   
+Access FastAPI Swagger:
 http://127.0.0.1:8000/docs
 http://localhost:8000/docs
 
