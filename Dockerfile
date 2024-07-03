@@ -8,14 +8,15 @@ WORKDIR /code
 RUN apt-get update && apt-get install -y python3 python3-pip
 
 # Install virtualenv
-RUN pip3 install --no-cache-dir virtualenv
+RUN pip install --no-cache-dir virtualenv
 
 # Create a virtual environment in the /venv directory
 RUN virtualenv /venv
 
 # Install dependencies
 COPY requirements.txt /code/requirements.txt
-RUN /venv/bin/pip3 install --no-cache-dir -r requirements.txt
+RUN /venv/bin/python -m pip install --upgrade pip
+RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Add the virtual environment to PATH & set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
