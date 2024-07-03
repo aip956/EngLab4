@@ -1,9 +1,10 @@
-# fastapi==0.68.0
+fastapi==0.68.0
 # # pydantic==1.8.2
-# uvicorn==0.20.0
+uvicorn==0.20.0
+aiokafka
 # pytest==6.0
 # requests==2.24
-
+# pip install aiokafka fastapi uvicorn
 # From Anthea's requirements.txt in Kafka-Consumer_Producer
 numpy==2.0.0
 pandas==2.2.2

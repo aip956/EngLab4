@@ -7,7 +7,7 @@ docker-compose up -d
 Start the app:
 uvicorn main:app --reload
 uvicorn app.main:app --reload (if in the app dir)
-
+(needed to pip install uvicorn fastaip aiokafka)
 Access FastAPI Swagger:
 http://127.0.0.1:8000/docs
 http://localhost:8000/docs
