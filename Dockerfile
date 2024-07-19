@@ -22,7 +22,7 @@ RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/venv/bin:$PATH"
+ENV PYTHONPATH=/code
 
 # Copy project files
 COPY ./app /code/app
-# COPY ./tests /code/tests

@@ -1,7 +1,7 @@
 # app/tests/test_main.py
 
 from fastapi.testclient import TestClient
-from app import app
+from app import *
 import pytest
 
 # PyTest fixtures
