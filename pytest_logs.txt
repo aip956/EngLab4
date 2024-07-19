@@ -1,0 +1,65 @@
+============================= test session starts ==============================
+platform linux -- Python 3.8.10, pytest-8.2.2, pluggy-1.5.0
+rootdir: /code
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting app/tests/test_main.py ____________________
+/venv/lib/python3.8/site-packages/urllib3/connection.py:196: in _new_conn
+    sock = connection.create_connection(
+/venv/lib/python3.8/site-packages/urllib3/util/connection.py:85: in create_connection
+    raise err
+/venv/lib/python3.8/site-packages/urllib3/util/connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+/venv/lib/python3.8/site-packages/urllib3/connectionpool.py:789: in urlopen
+    response = self._make_request(
+/venv/lib/python3.8/site-packages/urllib3/connectionpool.py:495: in _make_request
+    conn.request(
+/venv/lib/python3.8/site-packages/urllib3/connection.py:398: in request
+    self.endheaders()
+/usr/lib/python3.8/http/client.py:1251: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+/usr/lib/python3.8/http/client.py:1011: in _send_output
+    self.send(msg)
+/usr/lib/python3.8/http/client.py:951: in send
+    self.connect()
+/venv/lib/python3.8/site-packages/urllib3/connection.py:236: in connect
+    self.sock = self._new_conn()
+/venv/lib/python3.8/site-packages/urllib3/connection.py:211: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7faab46c06d0>: Failed to establish a new connection: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+/venv/lib/python3.8/site-packages/requests/adapters.py:486: in send
+    resp = conn.urlopen(
+/venv/lib/python3.8/site-packages/urllib3/connectionpool.py:843: in urlopen
+    retries = retries.increment(
+/venv/lib/python3.8/site-packages/urllib3/util/retry.py:519: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8008): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7faab46c06d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+
+During handling of the above exception, another exception occurred:
+app/tests/test_main.py:4: in <module>
+    from app import app
+app/__init__.py:4: in <module>
+    from .tasks import tasks
+app/tasks.py:62: in <module>
+    response = requests.post(url, json=task)
+/venv/lib/python3.8/site-packages/requests/api.py:115: in post
+    return request("post", url, data=data, json=json, **kwargs)
+/venv/lib/python3.8/site-packages/requests/api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+/venv/lib/python3.8/site-packages/requests/sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+/venv/lib/python3.8/site-packages/requests/sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+/venv/lib/python3.8/site-packages/requests/adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8008): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7faab46c06d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+=========================== short test summary info ============================
+ERROR app/tests/test_main.py - requests.exceptions.ConnectionError: HTTPConne...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.49s ===============================

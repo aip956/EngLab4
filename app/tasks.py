@@ -1,7 +1,7 @@
 import requests
 
 # FastAPI endpoint
-url = "http://localhost:8000/tasks/"
+url = "http://localhost:8008/tasks/"
 
 # List of tasks
 tasks = [

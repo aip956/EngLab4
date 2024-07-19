@@ -3,7 +3,7 @@
 services:
   api:
     build: .
-    command: /venv/bin/uvicorn app.main:app --host 0.0.0.0
+    command: /venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
     volumes:
       - .:/code
     ports:
@@ -41,8 +41,6 @@ services:
     command: ["/venv/bin/python3 -m pytest > /code/pytest_logs.txt"]
     volumes:
       - .:/code
-
-    
 
 networks:
   default:
