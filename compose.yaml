@@ -58,6 +58,18 @@ services:
     volumes:
       - ./connect-data:/var/lib/kafka-connect/data
     
+  # test:
+  #   build: .
+  #   entrypoint: ["/bin/sh", "-c"]
+  #   command: ["/venv/bin/python3 -m pytest > /code/pytest_logs.txt"]
+  #   volumes:
+  #     - .:/code
+  #   depends_on:
+  #     - api
+  #   environment:
+  #     PYTHONPATH: /code
+
+    
 
 networks:
   default:
