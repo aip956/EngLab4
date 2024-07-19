@@ -6,10 +6,10 @@ import logging
 import os
 
 
-KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")
+# KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")
 
 app = FastAPI()
-logger = logging.getLogger("uvicorn.error")
+# logger = logging.getLogger("uvicorn.error")
 
 @app.get("/")
 async def root():

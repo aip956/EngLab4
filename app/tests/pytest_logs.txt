@@ -32,7 +32,7 @@ During handling of the above exception, another exception occurred:
     conn = self._new_conn()
 /venv/lib/python3.8/site-packages/urllib3/connection.py:171: in _new_conn
     raise NewConnectionError(
-E   urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7ffb0c9321f0>: Failed to establish a new connection: [Errno 111] Connection refused
+E   urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7f9d137f9160>: Failed to establish a new connection: [Errno 111] Connection refused
 
 During handling of the above exception, another exception occurred:
 /venv/lib/python3.8/site-packages/requests/adapters.py:439: in send
@@ -41,7 +41,7 @@ During handling of the above exception, another exception occurred:
     retries = retries.increment(
 /venv/lib/python3.8/site-packages/urllib3/util/retry.py:446: in increment
     raise MaxRetryError(_pool, url, error or ResponseError(cause))
-E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ffb0c9321f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9d137f9160>: Failed to establish a new connection: [Errno 111] Connection refused'))
 
 During handling of the above exception, another exception occurred:
 app/tests/test_main.py:4: in <module>
@@ -60,8 +60,8 @@ app/tasks.py:62: in <module>
     r = adapter.send(request, **kwargs)
 /venv/lib/python3.8/site-packages/requests/adapters.py:516: in send
     raise ConnectionError(e, request=request)
-E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ffb0c9321f0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /tasks/ (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9d137f9160>: Failed to establish a new connection: [Errno 111] Connection refused'))
 =========================== short test summary info ============================
 ERROR app/tests/test_main.py - requests.exceptions.ConnectionError: HTTPConne...
 !!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
-=============================== 1 error in 0.72s ===============================
+=============================== 1 error in 0.51s ===============================
