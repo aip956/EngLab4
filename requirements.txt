@@ -1,5 +1,13 @@
-fastapi==0.68.0
-# pydantic==1.8.2
-uvicorn==0.20.0
-pytest==6.0
-requests==2.24
+# Required packages
+fastapi
+uvicorn
+requests
+aiokafka
+asyncio
+logging
+
+# Testing and syntax checking
+pytest
+pylint
+black
+autopep8
