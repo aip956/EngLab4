@@ -1,4 +1,3 @@
-from .constants import *
 from .run import app, logger, producer
 from aiokakfa import errors
 
