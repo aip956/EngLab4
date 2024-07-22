@@ -3,8 +3,6 @@ fastapi
 uvicorn
 requests
 aiokafka
-asyncio
-logging
 
 # Testing and syntax checking
 pytest
