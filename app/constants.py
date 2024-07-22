@@ -1,11 +1,8 @@
-from fastapi import FastAPI
 from aiokafka import AIOKafkaProducer
 import asyncio
 import logging
 import os
 
-
-app = FastAPI()
 
 KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")
 
