@@ -1,13 +1,15 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from aiokafka import errors 
 import asyncio
 
 from .constants import *
 from .consumer import *
 
-
-@app.on_event("startup")
-async def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup code
+    print("Application startup")
     try:
         await producer.start()
         logger.info("Kafka producer started")
@@ -20,11 +22,14 @@ async def on_startup():
         logger.info("Kafka consumer tasks created")
     except errors.KafkaConnectionError as e:
         logger.error(f"Kafka connection error: {e}")
-
-@app.on_event("shutdown")
-async def on_shutdown():
+    yield
+    # Shutdown code
+    print("Application shutdown")
     await producer.stop()
     logger.info("Kafka producer stopped")
+
+app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/messages")
 def get_messages():
