@@ -1,4 +1,4 @@
-from .run import app, logger, producer
+from ..old.run import app, logger, producer
 from aiokakfa import errors
 
 

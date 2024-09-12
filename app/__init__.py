@@ -1,9 +1,9 @@
 # app/kafka/__init__.py
 
-from .constants import *
-from .producer import produce
-from .consumer import *
-from .run import *
+# from ..old.constants import *
+# from ..old.producer import produce
+# from ..old.consumer import *
+# from ..old.run import *
 
 
-__all__ = ['app', 'produce']
+# __all__ = ['app', 'produce']

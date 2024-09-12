@@ -1,28 +1,21 @@
-# Ubuntu Docker Image with Python 3.8
-FROM ubuntu:20.04
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# Set work directory
+# Set the working directory in the container
 WORKDIR /code
 
-# Install Python 3 and pip
-RUN apt-get update && apt-get install -y python3 python3-pip
+# Copy the requirements.txt file into the container
+COPY requirements.txt /code/
 
-# Install virtualenv
-RUN pip install --no-cache-dir virtualenv
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Create a virtual environment in the /venv directory
-RUN virtualenv /venv
+# Copy the current directory contents into the container at /code
+COPY . /code/
 
-# Install dependencies
-COPY requirements.txt /code/requirements.txt
-RUN /venv/bin/python -m pip install --upgrade pip
-RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
+# Expose port 8000 for FastAPI
+EXPOSE 8000
 
-# Add the virtual environment to PATH & set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PATH="/venv/bin:$PATH"
-ENV PYTHONPATH=/code
+# Run the FastAPI app using Uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-# Copy project files
-COPY ./app /code/app
