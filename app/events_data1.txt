@@ -1,0 +1,60 @@
+0	
+id	1
+event_type	"accident"
+priority	"High"
+description	"Wrong song played during first dance"
+timestamp	"05:40"
+1	
+id	2
+event_type	"accident"
+priority	"High"
+description	"Missing name tags for reserved seats"
+timestamp	"03:36"
+2	
+id	3
+event_type	"accident"
+priority	"Low"
+description	"Guest having difficulty breathing due to pollen allergy"
+timestamp	"04:17"
+3	
+id	4
+event_type	"bride"
+priority	"Medium"
+description	"Miscommunication led to insufficient chairs for guests"
+timestamp	"04:11"
+4	
+id	5
+event_type	"groom"
+priority	"Low"
+description	"Missing groom's ring moments before the ceremony"
+timestamp	"05:53"
+5	
+id	6
+event_type	"bad_food"
+priority	"Medium"
+description	"Disorganized valet parking causing delays in car retrieval"
+timestamp	"02:21"
+6	
+id	7
+event_type	"groom"
+priority	"Low"
+description	"Guest feeling nauseous after eating undercooked meat"
+timestamp	"00:19"
+7	
+id	8
+event_type	"accident"
+priority	"High"
+description	"Missing table settings for head table"
+timestamp	"02:14"
+8	
+id	9
+event_type	"music"
+priority	"Low"
+description	"Disorganized valet parking causing delays in car retrieval"
+timestamp	"05:22"
+9	
+id	10
+event_type	"accident"
+priority	"Low"
+description	"Missing table settings for head table"
+timestamp	"02:32"
