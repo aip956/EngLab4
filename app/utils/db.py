@@ -1,0 +1,4 @@
+# db.py
+
+url = "https://acnbpblccsxkyrvuzopk.supabase.co"
+key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjbmJwYmxjY3N4a3lydnV6b3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYyNjE4OTYsImV4cCI6MjA0MTgzNzg5Nn0.M2RmlXf7s2O5uo3nQvSQolxdNcm__uOi8xJP0CVLLSg"

@@ -1,23 +1,25 @@
 from fastapi import FastAPI, HTTPException
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer, errors
+from supabase import create_client
+from app.utils import *
 import asyncio
 import logging
 import os
 from datetime import datetime
 # import random
 import json
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 from typing import List
-
 
 
 app = FastAPI()
 
+# Connect Database
+supabase = create_client(url, key)
+
 # Initialize logger
-# logger = logging.getLogger("uvicorn.error")
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
 
 # Kafka configuration
 KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")
@@ -25,14 +27,6 @@ KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")
 
 stress_level = 0
 events = []
-
-# Define Event class
-class Event(BaseModel):
-    event_id: int
-    event_type: str
-    priority: str
-    description: str
-    timestamp: str
 
 loop = asyncio.get_event_loop()
 producer = AIOKafkaProducer(loop=loop, bootstrap_servers=KAFKA_BOOTSTRAP_SERVER)
@@ -74,56 +68,6 @@ async def on_shutdown():
     await producer.stop() # Stop the Kafka producer
     logger.info("Kafka producer stopped")
 
-
-
-# Define Worker class
-class Worker:
-    def __init__(self, team, routine):
-        self.team = team 
-        self.routine = routine
-        self.status = "Idle"
-        self.last_active_time = datetime.now()
-
-    async def handle_event(self, event):
-        self.status = "Working"
-        # Simulate event handling time based on routine and priority
-        await asyncio.sleep(3) # 3 secs to handle event
-        self.status = "Idle"
-        self.last_active_time = datetime.now()
-        logger.info(f"Event {event.event_id} handled by {self.team}")
-
-        # work_time = PRIORITY_TIMEFRAMES[event.priority]
-        # start_time = datetime.now()
-    async def simulate_routine(self):
-        while True:
-            if self.routine == "Standard":
-                await asyncio.sleep(20)
-                self.status = "Idle"
-                await asyncio.sleep(5)
-            elif self.routine == "Intermittent":
-                await asyncio.sleep(5) # Simulate short working time
-                self.status = "Idle"
-                await asyncio.sleep(5) # Idle time
-            elif self.routine == "Concentrated":
-                await asyncio.sleep(60)
-                self.status = "Idle"
-                await asyncio.sleep(60)
-            self.status = "Working"
-
-
-# Define Team class
-class Team:
-    def __init__(self, name, routine):
-        self.name = name
-        self.routine = routine
-        self.workers = [Worker(name, routine) for _ in range(5)] # Assuming 5 workers / team
-
-    async def assign_event(self, event):
-        for worker in self.workers:
-            if worker.status == "Idle":
-                await worker.handle_event(event)
-                return True
-        return False
     
 # Initialize teams
 teams = {
@@ -266,6 +210,7 @@ async def consume_events():
                 events.append(event)
                 await dispatch_event(event)
                 logger.info(f"230Consumed and processed event: {event.event_type}")
+                # ADD event to db
             except ValidationError as e:
                 logger.error(f"Validation error for event data: {event_data} - {e.errors()}")
             except Exception as e:
