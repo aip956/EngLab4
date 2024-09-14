@@ -42,17 +42,25 @@ services:
     volumes:
       - ./web:/usr/share/nginx/html
 
-    
-  # test:
-  #   build: .
-  #   entrypoint: ["/bin/sh", "-c"]
-  #   command: ["/venv/bin/python3 -m pytest > /code/pytest_logs.txt"]
-  #   volumes:
-  #     - .:/code
-  #   depends_on:
-  #     - api
-  #   environment:
-  #     PYTHONPATH: /code
+  producer:
+    build: ./producer
+    container_name: producer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
+    volumes:
+      - ./producer:/app
+
+  consumer:
+    build: ./consumer
+    container_name: consumer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
+    volumes:
+      - ./consumer:/app
 
 
 networks:
