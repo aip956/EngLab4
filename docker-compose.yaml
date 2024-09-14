@@ -1,8 +1,7 @@
+
 services:
-  
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.1
-    hostname: zookeeper
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -14,7 +13,6 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.4.1
-    hostname: kafka
     container_name: kafka
     ports:
       - "9092:9092"
@@ -28,15 +26,15 @@ services:
 
   api:
     build: .
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    container_name: api
+    # command: python main.py  # Running main.py as specified in your Dockerfile
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - "8008:8000"
     depends_on:
       - kafka
     environment:
-      PYTHONPATH: /code
       KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
     networks:
       - kafka_network
@@ -52,26 +50,28 @@ services:
       - kafka_network
 
   consumer:
-    build: ./consumer
+    build: .
     container_name: consumer
+    command: python consumer/consume_events.py  # Run consumer logic
     depends_on:
       - kafka
     environment:
       KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
     volumes:
-      - ./consumer:/app
+      - .:/app
     networks:
       - kafka_network
 
   producer:
-    build: ./producer
+    build: .
     container_name: producer
+    command: python producer/produce_events.py  # Run producer logic
     depends_on:
       - kafka
     environment:
       KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
     volumes:
-      - ./producer:/app
+      - .:/app
     networks:
       - kafka_network
 

@@ -30,6 +30,11 @@ events = []
 loop = asyncio.get_event_loop()
 
 
+def start_app():
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
 @app.on_event("startup")
 async def on_startup():
     app.state.consumer = AIOKafkaConsumer(
@@ -182,6 +187,5 @@ async def handle_event(event):
         logger.error(f"Error handling event {event_id}: {e}")
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__=="__main__":
+    start_app() # Start consumer app
