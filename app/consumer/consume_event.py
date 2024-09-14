@@ -1,18 +1,18 @@
-from fastapi import FastAPI, HTTPException
-from aiokafka import AIOKafkaProducer, AIOKafkaConsumer, errors
+from fastapi import FastAPI, errors
 from supabase import create_client
-import asyncio
+from aiokafka import  AIOKafkaConsumer, errors
+from pydantic import ValidationError
+
 import logging
 import os
+import asyncio
 from datetime import datetime
 import json
-from pydantic import ValidationError
-from typing import List
 
 from app.utils import *
-from EngLab4.app.producer.sim_Kafka import run_simulation
+from .events import *
 
-
+# Initialize API
 app = FastAPI()
 
 # Connect Database
@@ -22,112 +22,62 @@ supabase = create_client(url, key)
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-# Kafka configuration
+# Kafka Configuration
 KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")
-
 
 stress_level = 0
 events = []
-
 loop = asyncio.get_event_loop()
-producer = AIOKafkaProducer(loop=loop, bootstrap_servers=KAFKA_BOOTSTRAP_SERVER)
-
-# Timeframes for priorities in secs
-PRIORITY_TIMEFRAMES = {
-    "High": 5,
-    "Medium": 10,
-    "Low": 15
-}
-
-# New topics for v2 of assignment
-topics = ["accident", "bad_food", "brawl", "broken_glass", "broken_itens", "bride", "dirty_floor", "dirty_table", "feeling_ill", "groom", "injured_kid", "missing_bride", "missing_groom", "missing_rings", "music_too_loud", "music_too_low", "music", "not_on_list", "person_fell"]
 
 
-SECURITY_TOPICS = ["brawl", "not_on_list", "accident", "person_fell", "injured_kid"]
-CLEAN_UP_TOPICS = ["dirty_table", "broken_glass", "broken_itens", "dirty_floor"]
-CATERING_TOPICS = ["bad_food", "music", "music_too_loud", "music_too_low", "feeling_ill"]
-OFFICIANT_TOPICS = ["missing_rings", "missing_bride", "missing_groom", "bride", "groom"]
-WAITERS_TOPICS = [ "broken_glass", "person_fell", "injured_kid", "feeling_ill", "broken_itens", "accident", "bad_food"]
-
-
-
-    
 @app.on_event("startup")
 async def on_startup():
-    global AIOKafkaProducer
-    producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVER)
+    app.state.consumer = AIOKafkaConsumer(
+        'wedding_events',
+        loop=loop,
+        bootstrap_servers=KAFKA_BOOTSTRAP_SERVER,
+        group_id="event_group"
+    )
+
     try:
-        await producer.start() # Start the Kafka producer
-        logger.info("Kafka producer started")
-        asyncio.create_task(consume_events())
+        asyncio.create_task(consume_events(app.state.consumer))
         logger.info("Kafka consumer task created")
     except errors.KafkaConnectionError as e:
         logger.error(f"Kafka connection error: {e}")
 
+
 @app.on_event("shutdown")
 async def on_shutdown():
-    await producer.stop() # Stop the Kafka producer
+    await app.state.consumer.stop() # Stop the Kafka consumer
     logger.info("Kafka producer stopped")
 
-    
-# Initialize teams
-teams = {
-    "Security": Team("Security", "Standard"),
-    "Clean_Up": Team("Clean_Up", "Intermittent"),
-    "Catering": Team("Catering", "Concentrated"), 
-    "Officiant": Team("Officiant", "Concentrated"),
-    "Waiters": Team("Waiters", "Standard")
-}
+# For the teams' messages
+@app.get("/security_messages")
+def get_security_messages():
+    logger.info(f"Returning security messages: {security_messages}")
+    return {"security messages": security_messages}
 
-# Event type to team mapping
-event_team_mapping = {
-        "accident": ["Security", "Waiters"],
-        "bad_food": ["Catering", "Waiters"], 
-        "brawl": ["Secruity"],
-        "broken_glass": ["Clean_Up", "Waiters"], 
-        "broken_itens": ["Clean_Up", "Waiters"], 
-        "bride": ["Officiant"], 
-        "dirty_floor": ["Clean_Up"], 
-        "dirty_table": ["Clean_Up"], 
-        "feeling_ill": ["Catering"], 
-        "groom": ["Officiant"], 
-        "injured_kid": ["Security", "Waiters"], 
-        "missing_bride": ["Officiant"], 
-        "missing_groom": ["Officiant"], 
-        "missing_rings": ["Officiant"], 
-        "music_too_loud": ["Catering"], 
-        "music_too_low": ["Catering"], 
-        "music": ["Catering"], 
-        "not_on_list": ["Security"], 
-        "person_fell": ["Security", "Waiters"]
-    }
+@app.get("/clean_up_messages")
+def get_clean_up_messages():
+    logger.info(f"Returning clean_up messages: {clean_up_messages}")
+    return {"clean_up messages": clean_up_messages}
 
-# For getting events by team
-# consumed_messages = []
-security_messages = []
-clean_up_messages = []
-catering_messages = []
-officiant_messages = []
-waiters_messages = []
+@app.get("/catering_messages")
+def get_catering_messages():
+    logger.info(f"Returning catering messages: {catering_messages}")
+    return {"catering messages": catering_messages}
+
+@app.get("/officiant_messages")
+def get_officiant_messages():
+    logger.info(f"Returning officiant messages: {officiant_messages}")
+    return {"officiant messages": officiant_messages}
+
+@app.get("/waiters_messages")
+def get_waiters_messages():
+    logger.info(f"Returning waiter messages: {waiters_messages}")
+    return {"waiters messages": waiters_messages}
 
 
-@app.post("/events")
-async def receive_event(event: Event):
-    valid_event_types = event_team_mapping.keys()
-    if event.event_type not in valid_event_types:
-        raise HTTPException(status_code=400, detail="Invalid event type")
-    # events.append(event)
-    logger.info(f"Received event: {event.event_id}")
-    # await dispatch_event(event)
-    await produce_event_to_kafka(event)
-    return{"status": "Event received"}
-
-async def produce_event_to_kafka(event):
-    try:
-        await producer.send_and_wait("events_topic", json.dumps(event.dict()).encode('utf-8'))
-        logger.info(f"Produced event: {event.event_id} to Kafka")
-    except errors.KafkaConnectionError as e:
-        logger.error(f"Kafka connection error: {e}")
 
 # Marry Me Organizer to dispatch events
 async def dispatch_event(event):
@@ -182,7 +132,7 @@ async def dispatch_event(event):
         stress_level += 1
         logger.warning (f"Event {event_id} could not be handled in time. Stress level increased to {stress_level}")
         logger.error(f"Error handling event {event_id}: {e}")
-        
+
 async def get_team_for_event(team_name):
     team = teams.get(team_name)
     if team:
@@ -192,13 +142,7 @@ async def get_team_for_event(team_name):
     return team
 
 # Kafka consumer function
-async def consume_events():
-    consumer = AIOKafkaConsumer(
-        'wedding_events',
-        loop=loop,
-        bootstrap_servers=KAFKA_BOOTSTRAP_SERVER,
-        group_id="event_group"
-    )
+async def consume_events(consumer):
     await consumer.start()
     try:
         async for msg in consumer:
@@ -237,53 +181,7 @@ async def handle_event(event):
         logger.warning(f"Event {event_id} could not be handled in tiem. Stress level increased to {stress_level}")
         logger.error(f"Error handling event {event_id}: {e}")
 
-@app.get("/")
-async def read_root():
-    return {"Hello": "world"}
-
-@app.get("/stress_level")
-def get_stress_level():
-    logger.info(f"Returning stress level: {stress_level}")
-    return {"stress_level": stress_level}
-
-@app.get("/events", response_model=List[Event])
-async def get_events():
-    logger.info(f"Returning events: {events}")
-    # return {"events": events}
-    return events
-
-# For the teams' messages
-@app.get("/security_messages")
-def get_security_messages():
-    logger.info(f"Returning security messages: {security_messages}")
-    return {"security messages": security_messages}
-
-@app.get("/clean_up_messages")
-def get_clean_up_messages():
-    logger.info(f"Returning clean_up messages: {clean_up_messages}")
-    return {"clean_up messages": clean_up_messages}
-
-@app.get("/catering_messages")
-def get_catering_messages():
-    logger.info(f"Returning catering messages: {catering_messages}")
-    return {"catering messages": catering_messages}
-
-@app.get("/officiant_messages")
-def get_officiant_messages():
-    logger.info(f"Returning officiant messages: {officiant_messages}")
-    return {"officiant messages": officiant_messages}
-
-@app.get("/waiters_messages")
-def get_waiters_messages():
-    logger.info(f"Returning waiter messages: {waiters_messages}")
-    return {"waiters messages": waiters_messages}
-
-
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    file_path = "simulator/events_data1.txt"  # Path to events data file
-    asyncio.run(run_simulation(file_path))
-    
-

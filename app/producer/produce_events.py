@@ -6,6 +6,26 @@ import argparse
 KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 TOPIC = "wedding_events"
 
+
+# @app.post("/events")
+# async def receive_event(event: Event):
+#     valid_event_types = event_team_mapping.keys()
+#     if event.event_type not in valid_event_types:
+#         raise HTTPException(status_code=400, detail="Invalid event type")
+#     # events.append(event)
+#     logger.info(f"Received event: {event.event_id}")
+#     # await dispatch_event(event)
+#     await produce_event_to_kafka(event)
+#     return{"status": "Event received"}
+
+# async def produce_event_to_kafka(event):
+#     try:
+#         await producer.send_and_wait("events_topic", json.dumps(event.dict()).encode('utf-8'))
+#         logger.info(f"Produced event: {event.event_id} to Kafka")
+#     except errors.KafkaConnectionError as e:
+#         logger.error(f"Kafka connection error: {e}")
+
+
 async def produce_event(producer, event):
     event_data = json.dumps(event).encode("utf-8")
     await producer.send_and_wait(TOPIC, event_data)

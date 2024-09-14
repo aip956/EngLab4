@@ -1,0 +1,12 @@
+# Required packages
+fastapi
+uvicorn
+requests
+aiokafka
+supabase
+
+# Testing and syntax checking
+# pytest
+# pylint
+# black
+# autopep8
