@@ -1,7 +1,5 @@
 # consumer/Dockerfile
-
-ARG PYTHON_VERSION=3.11.1-slim
-FROM python:${PYTHON_VERSION} as base
+FROM python:3.9-slim
 
 WORKDIR /app
 

@@ -9,6 +9,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka_network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.1
@@ -19,8 +21,10 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka_network
 
   api:
     build: .
@@ -33,6 +37,9 @@ services:
       - kafka
     environment:
       PYTHONPATH: /code
+      KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
+    networks:
+      - kafka_network
 
   web:
     image: nginx:latest
@@ -41,16 +48,8 @@ services:
       - "8080:8000"
     volumes:
       - ./web:/usr/share/nginx/html
-
-  producer:
-    build: ./producer
-    container_name: producer
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
-    volumes:
-      - ./producer:/app
+    networks:
+      - kafka_network
 
   consumer:
     build: ./consumer
@@ -61,8 +60,21 @@ services:
       KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
     volumes:
       - ./consumer:/app
+    networks:
+      - kafka_network
 
+  producer:
+    build: ./producer
+    container_name: producer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
+    volumes:
+      - ./producer:/app
+    networks:
+      - kafka_network
 
 networks:
-  default:
-    name: kafka_network
+  kafka_network:
+    driver: bridge

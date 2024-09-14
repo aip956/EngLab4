@@ -1,7 +1,6 @@
 # producer/Dockerfile
+FROM python:3.9-slim
 
-ARG PYTHON_VERSION=3.11.1-slim
-FROM python:${PYTHON_VERSION} as base
 
 WORKDIR /app
 

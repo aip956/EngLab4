@@ -9,7 +9,7 @@ import asyncio
 from datetime import datetime
 import json
 
-from app.utils import *
+from utils import *
 from .events import *
 
 # Initialize API
