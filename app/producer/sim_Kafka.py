@@ -2,7 +2,6 @@ import asyncio
 from aiokafka import AIOKafkaProducer
 import json
 import argparse
-from datetime import datetime
 
 KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 TOPIC = "wedding_events"

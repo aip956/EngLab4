@@ -42,5 +42,13 @@
    docker-compose up -d
    ```
 
+2. **Build the Docker Image**:
+   ```bash
+   docker build -t sim .
+    ```
+3. **Run the game**:
+   ```bash
+   docker run -it sim
+   ```
 
 ## Usage

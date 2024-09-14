@@ -1,15 +1,16 @@
 from fastapi import FastAPI, HTTPException
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer, errors
 from supabase import create_client
-from app.utils import *
 import asyncio
 import logging
 import os
 from datetime import datetime
-# import random
 import json
 from pydantic import ValidationError
 from typing import List
+
+from app.utils import *
+from EngLab4.app.producer.sim_Kafka import run_simulation
 
 
 app = FastAPI()
@@ -282,8 +283,7 @@ def get_waiters_messages():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-
-
+    file_path = "simulator/events_data1.txt"  # Path to events data file
+    asyncio.run(run_simulation(file_path))
+    
 
